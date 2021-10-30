@@ -62,20 +62,20 @@ def make_chains(text_string, n = 2):
             # chain = (words[idx], words[idx+1])
         if chain not in chains: # if the chain does not already exist in the chains dictionary
             try: 
-                chains[chain] = [words[idx + n + 1]] # add values for that chain (single word that follows the chain)
+                chains[chain] = [words[idx + n]] # add values for that chain (single word that follows the chain)
             except:
                 pass
         else:
             try:
-                chains[chain].append(words[idx + n + 1]) # if chain is already in dictionary, append the single word that follows chain to values
+                chains[chain].append(words[idx + n]) # if chain is already in dictionary, append the single word that follows chain to values
             except:
                 pass
         chain_list = []
 
     return chains
 
-text_string = open_and_read_file("green-eggs.txt")
-print(make_chains(text_string, 4))
+# text_string = open_and_read_file("green-eggs.txt")
+# print(make_chains(text_string, 4))
 
 
 # Would you could you in a house?
@@ -92,31 +92,34 @@ def make_text(chains):
 
     first_choice_list = []
 
-    for chain in chains.keys():
+    for chain in chains.keys(): # check all the keys for capital first letter and add to first choice list
         if chain[0][0] in string.ascii_uppercase:
             first_choice_list.append(chain)
 
-    chain = choice(first_choice_list)
+    chain = choice(first_choice_list) # first chain will be a random choice from first choice list
     words.append(' '.join(list(chain)))
     
 
-    while chain in chains:
-        next_word = choice(list(chains[chain]))
-        chain = (chain[1], next_word)
+    while chain in chains: # while the current chain is in the dictionary
+        next_word = choice(list(chains[chain])) # next word is a random choice of the current chain's values
+        chain = list(chain[1:])
+        chain.append(next_word) # change chain to previous chain, excluding first word and add next word
+        chain = tuple(chain)
         words.append(next_word)
 
     return ' '.join(words)
 
 
-# file_path = argv[1]
+file_path = argv[1]
 
-# # Open the file and turn it into one long string
-# input_text = open_and_read_file(file_path)
+# Open the file and turn it into one long string
+input_text = open_and_read_file(file_path)
 
-# # Get a Markov chain
-# chains = make_chains(input_text)
+# Get a Markov chain
+chains = make_chains(input_text, 3)
+# print(chains)
 
-# # Produce random text
-# random_text = make_text(chains)
+# Produce random text
+random_text = make_text(chains)
 
-# print(random_text)
+print(random_text)
